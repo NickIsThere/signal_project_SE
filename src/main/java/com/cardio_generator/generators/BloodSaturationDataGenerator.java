@@ -31,7 +31,6 @@ public class BloodSaturationDataGenerator implements PatientDataGenerator {
      *
      * @param patientId The ID of the patient.
      * @param outputStrategy The strategy used to output the generated data.
-     * @throws Exception if there was an error while generating blood saturation
      */
     @Override
     public void generate(int patientId, OutputStrategy outputStrategy) {

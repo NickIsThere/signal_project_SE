@@ -18,7 +18,6 @@ public class TcpOutputStrategy implements OutputStrategy {
      * The constructor of TcpOutputStrategy, which start a TCP server at a parsed port
      *
      * @param port The port number of where to start the TCP server.
-     * @throws IOException if the port is reachable
      */
     public TcpOutputStrategy(int port) {
         try {

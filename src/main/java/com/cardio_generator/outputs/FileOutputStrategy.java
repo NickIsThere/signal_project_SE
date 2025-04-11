@@ -33,7 +33,6 @@ public class FileOutputStrategy implements OutputStrategy {
      * @param timestamp  The timestamp of the data.
      * @param label      The type or label of the data (e.g., "ECG", "Alert").
      * @param data       The actual data content to be written.
-     * @throws Exception if the base directory coulndt be created
      */
     @Override
     public void output(int patientId, long timestamp, String label, String data) {

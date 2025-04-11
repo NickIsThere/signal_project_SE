@@ -26,7 +26,6 @@ public class AlertGenerator implements PatientDataGenerator {
      *
      * @param patientId The ID of the patient for whom to generate alert data.
      * @param outputStrategy The strategy used to output the generated data
-     * @throws Exception if there was an error in generating alert data
      */
     @Override
     public void generate(int patientId, OutputStrategy outputStrategy) {
