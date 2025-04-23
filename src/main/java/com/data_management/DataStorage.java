@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.alerts.Alert;
 import com.alerts.AlertGenerator;
 
 /**
@@ -14,6 +16,7 @@ import com.alerts.AlertGenerator;
  */
 public class DataStorage {
     private Map<Integer, Patient> patientMap; // Stores patient objects indexed by their unique patient ID.
+    private List<Alert> alertLog;
 
     /**
      * Constructs a new instance of DataStorage, initializing the underlying storage
@@ -21,6 +24,7 @@ public class DataStorage {
      */
     public DataStorage() {
         this.patientMap = new HashMap<>();
+        this.alertLog = new ArrayList<Alert>();
     }
 
     /**
@@ -61,7 +65,7 @@ public class DataStorage {
     public List<PatientRecord> getRecords(int patientId, long startTime, long endTime) {
         Patient patient = patientMap.get(patientId);
         if (patient != null) {
-            return patient.getRecords();
+            return patient.getRecords(0, System.currentTimeMillis());
         }
         return new ArrayList<>(); // return an empty list if no patient is found
     }
@@ -107,5 +111,8 @@ public class DataStorage {
         for (Patient patient : storage.getAllPatients()) {
             alertGenerator.evaluateData(patient);
         }
+    }
+    public void saveAlertInLog(Alert alert){
+        this.alertLog.add(alert);
     }
 }

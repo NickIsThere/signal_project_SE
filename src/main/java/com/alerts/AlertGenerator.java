@@ -4,7 +4,9 @@ import com.data_management.DataStorage;
 import com.data_management.Patient;
 import com.data_management.PatientRecord;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * The {@code AlertGenerator} class is responsible for monitoring patient data
@@ -39,7 +41,7 @@ public class AlertGenerator {
      */
     public void evaluateData(Patient patient) {
 
-        List<PatientRecord> records = patient.getRecords();
+        List<PatientRecord> records = patient.getRecords(0, System.currentTimeMillis());
         String patientId = String.valueOf(patient.getPatientId());
 
         // sorting for ease of use later
@@ -104,7 +106,6 @@ public class AlertGenerator {
                 }
             }
         }
-
         //Hypotensive Hypoxemia check
         for (PatientRecord s : systolic) {
             if (s.getMeasurementValue() >= 90) continue;
@@ -148,7 +149,6 @@ public class AlertGenerator {
         }
     }
 
-
     /**
      * Triggers an alert for the monitoring system. This method can be extended to
      * notify medical staff, log the alert, or perform other actions. The method
@@ -158,7 +158,7 @@ public class AlertGenerator {
      * @param alert the alert object containing details about the alert condition
      */
     private void triggerAlert(Alert alert) {
-        // ???
         System.out.println(alert);
+        dataStorage.saveAlertInLog(alert);
     }
 }

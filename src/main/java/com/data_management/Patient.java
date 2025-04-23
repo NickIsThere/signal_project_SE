@@ -41,15 +41,25 @@ public class Patient {
     }
 
     /**
-     * Retrieves a list of PatientRecord objects for this patient that fall within a
-     * specified time range.
-     * The method filters records based on the start and end times provided.
+     * Retrieves a list of PatientRecord objects for this patient that fall within a specified time range.
+     * Filters records based on the start and end times provided.
      *
-     * @return a list of PatientRecord objects that fall within the specified time
-     * range
+     * @param startTime the start time of the range (milliseconds since Unix epoch)
+     * @param endTime the end time of the range (milliseconds since Unix epoch)
+     * @return a list of PatientRecord objects that fall within the specified time range
      */
-    public List<PatientRecord> getRecords() {
-        return patientRecords;
+    public List<PatientRecord> getRecords(long startTime, long endTime) {
+        List<PatientRecord> filteredRecords = new ArrayList<>();
+
+        // Loop through all patient records and add those within the time range
+        for (PatientRecord record : patientRecords) {
+            long recordTimestamp = record.getTimestamp();
+            if (recordTimestamp >= startTime && recordTimestamp <= endTime) {
+                filteredRecords.add(record);  // Add to the list if within the time range
+            }
+        }
+
+        return filteredRecords;
     }
 
     /**
