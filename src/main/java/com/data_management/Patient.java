@@ -49,7 +49,17 @@ public class Patient {
      * range
      */
     public List<PatientRecord> getRecords() {
-        // TODO Implement and test this method
         return patientRecords;
+    }
+
+    /**
+     * Retrieves the patients ID
+     *
+     *
+     * @return an int of the patient ID
+     * @ Authors Milena and Nick
+     */
+    public int getPatientId() {
+        return patientId;
     }
 }
