@@ -95,7 +95,7 @@ public class AlertGenerator {
         for (int i = 0; i < spo2.size(); i++) {
             PatientRecord current = spo2.get(i);
             double val = current.getMeasurementValue();
-            if (val < 92) {
+            if (spo2.size() == 1 && val < 92) {
                 triggerAlert(new Alert(patientId, "Low SpO2", current.getTimestamp()));
             }
             for (int j = i + 1; j < spo2.size(); j++) {
