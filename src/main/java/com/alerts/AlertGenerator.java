@@ -1,5 +1,9 @@
 package com.alerts;
 
+import com.alerts.alert_factories.AlertFactory;
+import com.alerts.alert_factories.BloodOxygenAlertFactory;
+import com.alerts.alert_factories.BloodPressureAlertFactory;
+import com.alerts.alert_factories.ECGAlertFactory;
 import com.data_management.DataStorage;
 import com.data_management.Patient;
 import com.data_management.PatientRecord;
@@ -16,6 +20,9 @@ import java.util.List;
  */
 public class AlertGenerator {
     private DataStorage dataStorage;
+    private AlertFactory bloodPressureAlertFactory;
+    private AlertFactory bloodOxygenAlertFactory;
+    private AlertFactory ecgAlertFactory;
 
     /**
      * Constructs an {@code AlertGenerator} with a specified {@code DataStorage}.
@@ -26,6 +33,9 @@ public class AlertGenerator {
      *                    data
      */
     public AlertGenerator(DataStorage dataStorage) {
+        this.bloodPressureAlertFactory = new BloodPressureAlertFactory();
+        this.bloodOxygenAlertFactory = new BloodOxygenAlertFactory();
+        this.ecgAlertFactory = new ECGAlertFactory();
         this.dataStorage = dataStorage;
     }
 
@@ -77,13 +87,13 @@ public class AlertGenerator {
         for (PatientRecord s : systolic) {
             double val = s.getMeasurementValue();
             if (val > 180 || val < 90) {
-                triggerAlert(new Alert(patientId, "Critical Systolic BP", s.getTimestamp()));
+                triggerAlert(bloodPressureAlertFactory.createAlert(patientId, "Critical Systolic BP", s.getTimestamp()));
             }
         }
         for (PatientRecord d : diastolic) {
             double val = d.getMeasurementValue();
             if (val > 120 || val < 60) {
-                triggerAlert(new Alert(patientId, "Critical Diastolic BP", d.getTimestamp()));
+                triggerAlert(bloodPressureAlertFactory.createAlert(patientId, "Critical Diastolic BP", d.getTimestamp()));
             }
         }
 
@@ -96,13 +106,13 @@ public class AlertGenerator {
             PatientRecord current = spo2.get(i);
             double val = current.getMeasurementValue();
             if (spo2.size() == 1 && val < 92) {
-                triggerAlert(new Alert(patientId, "Low SpO2", current.getTimestamp()));
+                triggerAlert(bloodOxygenAlertFactory.createAlert(patientId, "Low SpO2", current.getTimestamp()));
             }
             for (int j = i + 1; j < spo2.size(); j++) {
                 long deltaTime = spo2.get(j).getTimestamp() - current.getTimestamp();
                 if (deltaTime > 600_000) break; // 10 minutes in milliseconds
                 if (current.getMeasurementValue() - spo2.get(j).getMeasurementValue() >= 5) {
-                    triggerAlert(new Alert(patientId, "Rapid SpO2 Drop", spo2.get(j).getTimestamp()));
+                    triggerAlert(bloodOxygenAlertFactory.createAlert(patientId, "Rapid SpO2 Drop", spo2.get(j).getTimestamp()));
                 }
             }
         }
@@ -111,7 +121,7 @@ public class AlertGenerator {
             if (s.getMeasurementValue() >= 90) continue;
             for (PatientRecord o : spo2) {
                 if (Math.abs(s.getTimestamp() - o.getTimestamp()) <= 300_000 && o.getMeasurementValue() < 92) {
-                    triggerAlert(new Alert(patientId, "Hypotensive Hypoxemia", Math.max(s.getTimestamp(), o.getTimestamp())));
+                    triggerAlert(bloodPressureAlertFactory.createAlert(patientId, "Hypotensive Hypoxemia", Math.max(s.getTimestamp(), o.getTimestamp())));
                 }
             }
         }
@@ -126,7 +136,7 @@ public class AlertGenerator {
             double avg = sum / window;
             double currentVal = ecg.get(i).getMeasurementValue();
             if (currentVal > avg * 1.5) {
-                triggerAlert(new Alert(patientId, "Abnormal ECG Peak", ecg.get(i).getTimestamp()));
+                triggerAlert(ecgAlertFactory.createAlert(patientId, "Abnormal ECG Peak", ecg.get(i).getTimestamp()));
             }
         }
     }
