@@ -22,7 +22,7 @@ class DataStorageTest implements DataReader {
                 // Mock Data reader
             }
         };
-        DataStorage storage = new DataStorage();
+        DataStorage storage =  DataStorage.getInstance();;
         storage.addPatientData(1, 100.0, "WhiteBloodCells", 1714376789050L);
         storage.addPatientData(1, 200.0, "WhiteBloodCells", 1714376789051L);
 

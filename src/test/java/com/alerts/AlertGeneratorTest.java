@@ -19,14 +19,9 @@ class AlertGeneratorTest {
 
     @BeforeEach
     void setUp() {
-        // Stub DataStorage that captures saved alerts
         savedAlerts = new ArrayList<>();
-        dataStorage = new DataStorage() {
-            @Override
-            public void saveAlertInLog(Alert alert) {
-                savedAlerts.add(alert);
-            }
-        };
+        dataStorage = DataStorage.getInstance();
+        dataStorage.clearDataForTesting(); // clean it before every test
         alertGenerator = new AlertGenerator(dataStorage);
     }
 

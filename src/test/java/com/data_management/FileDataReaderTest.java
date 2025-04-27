@@ -14,7 +14,7 @@ class FileDataReaderTest {
 
     @BeforeEach
     void setUp() {
-        dataStorage = new DataStorage();
+        dataStorage =  DataStorage.getInstance();;
     }
 
     @Test
