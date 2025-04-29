@@ -1,12 +1,10 @@
 package com.data_management;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.alerts.Alert;
 import com.alerts.AlertGenerator;
+import com.alerts.alert_decorator.AlertComponent;
 
 /**
  * Manages storage and retrieval of patient data within a healthcare monitoring
@@ -125,12 +123,17 @@ public class DataStorage {
             alertGenerator.evaluateData(patient);
         }
     }
-    public void saveAlertInLog(Alert alert){
-        this.alertLog.add(alert);
+    public void saveAlertInLog(AlertComponent alert){
+        this.alertLog.add((Alert) alert);
     }
     // method for testing
     public void clearDataForTesting() {
         patientMap.clear();
         alertLog.clear();
+    }
+
+    public List<Alert> getAlertLog() {
+        // Return an unmodifiable view so nobody else can edit it
+        return Collections.unmodifiableList(alertLog);
     }
 }
