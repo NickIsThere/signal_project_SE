@@ -4,7 +4,7 @@ import com.alerts.Alert;
 import com.alerts.AlertUtils;
 import com.alerts.alert_factories.AlertFactory;
 import com.alerts.alert_factories.BloodOxygenAlertFactory;
-import com.alerts.decorator.PriorityAlertDecorator;
+import com.alerts.alert_decorator.PriorityAlertDecorator;
 import com.data_management.DataStorage;
 import com.data_management.Patient;
 import com.data_management.PatientRecord;
@@ -28,7 +28,7 @@ public class OxygenSaturationStrategy implements AlertStrategy {
 
         List<PatientRecord> spo2 = new ArrayList<>();
         for (PatientRecord r : records) {
-            if ("SpO2".equalsIgnoreCase(String.valueOf(r))) {
+            if ("SpO2".equalsIgnoreCase(r.getRecordType())) {
                 spo2.add(r);
             }
         }

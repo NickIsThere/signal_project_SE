@@ -4,7 +4,7 @@ import com.alerts.Alert;
 import com.alerts.AlertUtils;
 import com.alerts.alert_factories.AlertFactory;
 import com.alerts.alert_factories.ECGAlertFactory;
-import com.alerts.decorator.PriorityAlertDecorator;
+import com.alerts.alert_decorator.PriorityAlertDecorator;
 import com.data_management.DataStorage;
 import com.data_management.Patient;
 import com.data_management.PatientRecord;

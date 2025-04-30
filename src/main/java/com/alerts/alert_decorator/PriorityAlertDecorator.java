@@ -1,7 +1,6 @@
-package com.alerts.decorator;
+package com.alerts.alert_decorator;
 
-import com.alerts.alert_decorator.AlertComponent;
-import com.alerts.alert_decorator.AlertDecorator;
+
 import com.data_management.DataStorage;
 
 /**

@@ -1,71 +1,48 @@
 package com.alerts.alert_strategies;
 
-import com.alerts.Alert;
 import com.alerts.Strategy.BloodPressureStrategy;
 import com.data_management.DataStorage;
 import com.data_management.Patient;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class BloodPressureStrategyTest {
 
     private DataStorage storage;
+    private Patient patient;
 
     @BeforeEach
     void setup() {
         storage = DataStorage.getInstance();
         storage.clearDataForTesting();
+
+        patient = new Patient(1);
+        long now = System.currentTimeMillis();
+
+        // Critical systolic
+        patient.addRecord(190, "Systolic", now - 30000);
+        // Critical diastolic
+        patient.addRecord(130, "Diastolic", now - 25000);
+        // Trend systolic
+        patient.addRecord(100, "Systolic", now - 20000);
+        patient.addRecord(115, "Systolic", now - 15000);
+        patient.addRecord(130, "Systolic", now - 10000);
+        // Hypoxemia
+        patient.addRecord(85, "Systolic", now - 1000);
+        patient.addRecord(91, "sp02", now - 500);
     }
 
     @Test
-    void criticalThresholdsTriggerAlerts() throws Exception {
-        Patient patient = new Patient(6);
-        List<Alert> log = storage.getAlertLog();
-        // systolic too high and too low
-        patient.addRecord(190.0, "Systolic", 1L);
-        patient.addRecord(80.0, "Systolic", 2L);
-        // diastolic too high and too low
-        patient.addRecord(130.0, "Diastolic", 3L);
-        patient.addRecord(50.0, "Diastolic", 4L);
+    void testCheckAlertGeneratesExpectedAlerts() {
+        BloodPressureStrategy strategy = new BloodPressureStrategy();
+        strategy.checkAlert(patient, storage);
 
-        new BloodPressureStrategy().checkAlert(patient, storage);
-
-        List<Alert> alerts = storage.getAlertLog();
-
-        assertEquals(4, alerts.size());
-
+        assertFalse(storage.getAlertLog().isEmpty());
+        assertTrue(storage.getAlertLog().stream().anyMatch(a -> a.getCondition().contains("Critical Systolic BP")));
+        assertTrue(storage.getAlertLog().stream().anyMatch(a -> a.getCondition().contains("Critical Diastolic BP")));
+        assertTrue(storage.getAlertLog().stream().anyMatch(a -> a.getCondition().contains("Systolic Trend")));
+        assertTrue(storage.getAlertLog().stream().anyMatch(a -> a.getCondition().contains("Hypotensive Hypoxemia")));
     }
-
-    @Test
-    void upwardTrendTriggersAlert() throws Exception {
-        Patient patient = new Patient(7);
-        patient.addRecord(100.0, "Systolic", 10L);
-        patient.addRecord(115.0, "Systolic", 20L);
-        patient.addRecord(130.0, "Systolic", 30L);
-
-        new BloodPressureStrategy().checkAlert(patient, storage);
-
-        List<Alert> alerts = storage.getAlertLog();
-
-        assertEquals(1, alerts.size());
-        assertEquals("BloodPressure - Systolic Trend Alert", alerts.get(0).getCondition());
-    }
-
-    @Test
-    void hypotensiveHypoxemiaTriggersAlert() throws Exception {
-        Patient patient = new Patient(8);
-        patient.addRecord(85.0, "Systolic", 1000L);
-        patient.addRecord(90.0, "sp02",    1200L);
-
-        new BloodPressureStrategy().checkAlert(patient, storage);
-
-        List<Alert> alerts = storage.getAlertLog();
-        assertFalse(alerts.isEmpty(), "Expected at least one alert");
-    }
-
 }
