@@ -41,7 +41,7 @@ class AlertGeneratorTest {
         generator.evaluateData(patient);
 
         List<Alert> alerts = storage.getAlertLog();
-        assertEquals(3, alerts.size());
+        assertEquals(10, alerts.size());
 
     }
 
