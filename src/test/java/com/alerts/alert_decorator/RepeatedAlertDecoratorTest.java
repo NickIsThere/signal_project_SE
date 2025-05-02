@@ -19,7 +19,7 @@ class RepeatedAlertDecoratorTest {
         @Override
         public void trigger(DataStorage dataStorage) {
             triggerCount++;
-            dataStorage.saveAlertInLog(this);  // ✅ safe, this is a true Alert
+            dataStorage.saveAlertInLog(this);
         }
 
         public int getTriggerCount() {
@@ -36,7 +36,7 @@ class RepeatedAlertDecoratorTest {
     void testTriggerRepeatsCorrectNumberOfTimes() {
         DataStorage storage = DataStorage.getInstance();
         CountingAlert counting = new CountingAlert();
-        AlertComponent repeated = new RepeatedAlertDecorator(counting, 3, 0); // no delay
+        AlertComponent repeated = new RepeatedAlertDecorator(counting, 3, 0);// removed delay, even longer with
 
         repeated.trigger(storage);
 
