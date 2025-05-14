@@ -62,13 +62,6 @@ public class Patient {
         return filteredRecords;
     }
 
-    /**
-     * Retrieves the patients ID
-     *
-     *
-     * @return an int of the patient ID
-     * @ Authors Milena and Nick
-     */
     public int getPatientId() {
         return patientId;
     }

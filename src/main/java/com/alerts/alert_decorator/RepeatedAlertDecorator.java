@@ -22,6 +22,14 @@ public class RepeatedAlertDecorator extends AlertDecorator {
         this.intervalMillis = intervalMillis;
     }
 
+    /**
+     * Triggers the wrapped alert repeatedly based on the configured count and interval.
+     *
+     * If the thread is interrupted during sleep, the repetition loop is exited early
+     * and the interrupt flag is restored.
+     *
+     * @param dataStorage the DataStorage instance containing the data used to evaluate and trigger the alert
+     */
     @Override
     public void trigger(DataStorage dataStorage) {
         for (int i = 0; i < repeatCount; i++) {

@@ -12,6 +12,8 @@ public interface AlertComponent {
 
     /**
      * Triggers the alert: logs, notifies, etc.
+     *
+     * @param dataStorage data from dataStorage
      */
     void trigger(DataStorage dataStorage);
 }

@@ -27,6 +27,11 @@ public abstract class AlertDecorator implements AlertComponent {
         return wrapped.getTimestamp();
     }
 
+    /**
+     * Triggering an alert: logs, notifies, etc.
+     *
+     * @param dataStorage data from dataStorage
+     */
     @Override
     public void trigger(DataStorage dataStorage) {
         wrapped.trigger(dataStorage);
