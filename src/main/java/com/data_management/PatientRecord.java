@@ -67,4 +67,6 @@ public class PatientRecord {
     public String getRecordType() {
         return recordType;
     }
+
+    public void setMeasurementValue(double value) {this.measurementValue = value;}
 }

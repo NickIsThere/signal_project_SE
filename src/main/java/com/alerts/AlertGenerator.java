@@ -4,16 +4,10 @@ import com.alerts.Strategy.AlertStrategy;
 import com.alerts.Strategy.BloodPressureStrategy;
 import com.alerts.Strategy.HeartRateStrategy;
 import com.alerts.Strategy.OxygenSaturationStrategy;
-import com.alerts.alert_factories.AlertFactory;
-import com.alerts.alert_factories.BloodOxygenAlertFactory;
-import com.alerts.alert_factories.BloodPressureAlertFactory;
-import com.alerts.alert_factories.ECGAlertFactory;
 import com.data_management.DataStorage;
 import com.data_management.Patient;
-import com.data_management.PatientRecord;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**

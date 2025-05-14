@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URI;
+
+
 public class FileDataReader implements DataReader{
 
     private String[] args; // Store the command-line arguments
@@ -64,6 +67,16 @@ public class FileDataReader implements DataReader{
         }
     }
 
+    @Override
+    public void readContinuousData(URI websocketUri, DataStorage dataStorage) throws IOException {
+        // skippy
+    }
+
+    @Override
+    public void close() throws IOException {
+        //The Bush Roo!!
+    }
+
     /**
      * Retrieves the file path from the command-line arguments.
      *
@@ -95,4 +108,5 @@ public class FileDataReader implements DataReader{
             e.printStackTrace();
         }
     }
+
 }

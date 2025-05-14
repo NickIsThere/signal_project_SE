@@ -52,12 +52,13 @@ public class DataStorage {
      *                         milliseconds since the Unix epoch
      */
     public void addPatientData(int patientId, double measurementValue, String recordType, long timestamp) {
-        Patient patient = patientMap.get(patientId);
-        if (patient == null) {
-            patient = new Patient(patientId);
-            patientMap.put(patientId, patient);
-        }
-        patient.addRecord(measurementValue, recordType, timestamp);
+        patientMap.compute(patientId, (id, patient) -> {
+            if (patient == null) {
+                patient = new Patient(patientId);
+            }
+            patient.addOrUpdateRecord(measurementValue, recordType, timestamp);
+            return patient;
+        });
     }
 
     /**
@@ -75,10 +76,9 @@ public class DataStorage {
      */
     public List<PatientRecord> getRecords(int patientId, long startTime, long endTime) {
         Patient patient = patientMap.get(patientId);
-        if (patient != null) {
-            return patient.getRecords(0, System.currentTimeMillis());
-        }
-        return new ArrayList<>(); // return an empty list if no patient is found
+        return (patient != null)
+                ? patient.getRecords(startTime, endTime)
+                : Collections.emptyList();
     }
 
     /**

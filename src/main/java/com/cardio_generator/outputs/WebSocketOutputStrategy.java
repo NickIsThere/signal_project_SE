@@ -17,12 +17,30 @@ public class WebSocketOutputStrategy implements OutputStrategy {
 
     @Override
     public void output(int patientId, long timestamp, String label, String data) {
-        String message = String.format("%d,%d,%s,%s", patientId, timestamp, label, data);
-        // Broadcast the message to all connected clients
+        String message;
+        try {
+            // Re format as JSON
+            message = String.format(
+                    "{" + "\"patientId\":%d," + "\"timestamp\":%d," + "\"recordType\":\"%s\"," + "\"measurementValue\":\"%s\"" + "}",
+                    patientId, timestamp, label, data
+            );
+        } catch (Exception e) {
+            System.err.println("Error building JSON message for patient " + patientId);
+            e.printStackTrace();
+            return;
+        }
+
+        // Broadcast to all active WebSocket connections
         for (WebSocket conn : server.getConnections()) {
-            conn.send(message);
+            try {
+                conn.send(message);
+            } catch (Exception sendEx) {
+                System.err.println("Failed to send message to " + conn.getRemoteSocketAddress());
+                sendEx.printStackTrace();
+            }
         }
     }
+
 
     private static class SimpleWebSocketServer extends WebSocketServer {
 

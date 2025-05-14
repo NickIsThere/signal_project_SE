@@ -63,11 +63,23 @@ public class Patient {
     }
 
     /**
+     * If a record with the same type & timestamp exists, update its value;
+     * otherwise append a new record.
+     */
+    public void addOrUpdateRecord(double measurementValue, String recordType, long timestamp) {
+        for (PatientRecord rec : patientRecords) {
+            if (rec.getRecordType().equals(recordType) && rec.getTimestamp() == timestamp) {
+                rec.setMeasurementValue(measurementValue);
+                return;
+            }
+        }
+        patientRecords.add(new PatientRecord(patientId, measurementValue, recordType, timestamp));
+    }
+
+    /**
      * Retrieves the patients ID
      *
-     *
      * @return an int of the patient ID
-     * @ Authors Milena and Nick
      */
     public int getPatientId() {
         return patientId;

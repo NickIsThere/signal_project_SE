@@ -51,12 +51,7 @@ public class HeartRateStrategy implements AlertStrategy {
             if (currentVal > avg * 1.5) {
                 Alert alert = heartRateAlertFactory.createAlert(patientId,  "Abnormal ECG Peak", System.currentTimeMillis());
                 dataStorage.saveAlertInLog(alert);
-                AlertUtils.fireWithPriority(
-                        alert,
-                        dataStorage,
-                        PriorityAlertDecorator.Priority.MEDIUM,
-                        3,
-                        15_000L
+                AlertUtils.fireWithPriority(alert, dataStorage, PriorityAlertDecorator.Priority.MEDIUM, 3, 15_000L
                 );
 
             }
