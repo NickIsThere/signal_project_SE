@@ -24,7 +24,6 @@ public class FileDataReader implements DataReader{
      */
     @Override
     public void readData(DataStorage dataStorage) throws IOException {
-        // Using the stored args[] to get the file path
         String outputFilePath = getFilePathFromArgs(this.args);
 
         File file = new File(outputFilePath);
@@ -33,10 +32,8 @@ public class FileDataReader implements DataReader{
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 
             String line;
-            // Going through the lines
             while ((line = reader.readLine()) != null) {
 
-                //CSV file, parts separated by a comma
                 String[] parts = line.split(",");
 
                 // Ensuring that the line has exactly 4 parts: patientId, measurementValue, recordType, timestamp
@@ -103,7 +100,7 @@ public class FileDataReader implements DataReader{
 
         try {
             fileDataReader.readData(dataStorage);
-            System.out.println("Data has been successfully read and stored!");
+            System.out.println("Data has been successfully read and stored");
         } catch (IOException e) {
             e.printStackTrace();
         }

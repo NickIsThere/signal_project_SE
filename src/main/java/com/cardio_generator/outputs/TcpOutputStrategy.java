@@ -5,8 +5,9 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.Executors;
-/*
- * An implementation of {@link OutputStrategy} that sends patient data over a TCP socket.
+
+/**
+ * An implementation of link OutputStrategy that sends patient data over a TCP socket.
  */
 public class TcpOutputStrategy implements OutputStrategy {
 

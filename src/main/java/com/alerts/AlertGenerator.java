@@ -11,22 +11,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The {@code AlertGenerator} class is responsible for monitoring patient data
- * and generating alerts when certain predefined conditions are met. This class
- * relies on a {@link DataStorage} instance to access patient data and evaluate
- * it against specific health criteria.
+ * The AlertGenerator class is responsible for monitoring patient data
+ * and generating alerts when some predefined conditions are met. This class
+ * relies on a DataStorage instance to access patient data and evaluates it
+ * based on specific criteria.
  */
 public class AlertGenerator {
     private final DataStorage dataStorage;
     private final List<AlertStrategy> alertStrategies;
 
     /**
-     * Constructs an {@code AlertGenerator} with a specified {@code DataStorage}.
-     * The {@code DataStorage} is used to retrieve patient data that this class
+     * Constructs an AlertGenerator with a specified DataStorage.
+     * The DataStorage is used to retrieve patient data that this class
      * will monitor and evaluate.
      *
-     * @param dataStorage the data storage system that provides access to patient
-     *                    data
+     * @param dataStorage the data storage system that provides access to patient's data
      */
     public AlertGenerator(DataStorage dataStorage) {
         this.dataStorage = dataStorage;
