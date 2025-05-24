@@ -1,9 +1,6 @@
 package com;
 
-import com.cardio_generator.HealthDataSimulator;
-import com.data_management.DataReader;
 import com.data_management.DataStorage;
-import com.data_management.FileDataReader;
 import com.data_management.WebSocketDataReader;
 
 import java.io.IOException;

@@ -2,6 +2,7 @@ package com.data_management;
 
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
+import java.util.concurrent.TimeUnit;
 
 import java.io.IOException;
 import java.net.URI;
@@ -14,6 +15,8 @@ import java.util.stream.Collectors;
  */
 public class WebSocketDataReader implements DataReader {
     private WebSocketClient client;
+    private final int maxRetries = 5;
+    private final long baseDelayMs = 1000;
 
     @Override
     public void readData(DataStorage dataStorage) throws IOException {
@@ -21,61 +24,73 @@ public class WebSocketDataReader implements DataReader {
     }
 
     @Override
-    public void readContinuousData(URI websocketUri, DataStorage dataStorage) throws IOException {
-        client = new WebSocketClient(websocketUri) {
+    public void readContinuousData(URI uri, DataStorage storage) throws IOException {
+        connectWithRetry(uri, storage, 0);
+    }
+
+    private void connectWithRetry(URI uri, DataStorage storage, int attempt) throws IOException {
+        if (attempt > maxRetries) {
+            throw new IOException("Max reconnect attempts reached for " + uri);
+        }
+
+        client = new WebSocketClient(uri) {
             @Override
             public void onOpen(ServerHandshake handshake) {
-                System.out.println("Connected to WebSocket server: " + websocketUri);
+                System.out.println("Connected to WebSocket server: " + uri);
             }
 
             @Override
             public void onMessage(String message) {
-                if (!message.startsWith("{") || !message.endsWith("}")) {
+                // Quick sanity check
+                if (message == null || !message.startsWith("{") || !message.endsWith("}")) {
                     System.err.println("Corrupted message (skipped): " + message);
                     return;
                 }
 
                 try {
+                    // Parse simple JSON object into a Map<String,String>
                     Map<String, String> map = Arrays.stream(
-                                    message.replaceAll("[\\{\\}\"]", "").split(",")
-                            )
+                                    message.substring(1, message.length() - 1).split(","))
                             .map(s -> s.split(":", 2))
                             .collect(Collectors.toMap(
-                                    a -> a[0].trim(),
-                                    a -> a.length > 1 ? a[1].trim() : "" // Avoid IndexOutOfBoundsException
+                                    a -> a[0].replaceAll("\"", "").trim(),
+                                    a -> a[1].replaceAll("\"", "").trim()
                             ));
 
-                    // Extract fields with validation
-                    String patientIdStr = map.get("patientId");
-                    String timestampStr = map.get("timestamp");
+                    int    patientId  = Integer.parseInt(map.get("patientId"));
+                    long   timestamp  = Long.parseLong(map.get("timestamp"));
                     String recordType = map.get("recordType");
-                    String rawValue = map.get("measurementValue");
+                    String rawValue   = map.get("measurementValue");
 
-                    if (patientIdStr == null || timestampStr == null || recordType == null || rawValue == null) {
-                        System.err.println("Missing required fields in message: " + message);
+                    // Handle Alert messages separately
+                    if ("Alert".equalsIgnoreCase(recordType)) {
+                        // Build and fire an Alert
+                        com.alerts.Alert alert = new com.alerts.Alert(
+                                String.valueOf(patientId),
+                                rawValue,    // "triggered" or "resolved"
+                                timestamp
+                        );
+                        com.alerts.AlertUtils.fireWithPriority(
+                                alert,
+                                storage,
+                                com.alerts.alert_decorator.PriorityAlertDecorator.Priority.MEDIUM,
+                                1,
+                                0L
+                        );
                         return;
                     }
 
-
-                    int patientId = Integer.parseInt(patientIdStr);
-                    long timestamp = Long.parseLong(timestampStr);
-
-                    // Clean and validate rawValue
-                    String cleaned = rawValue.replaceAll("[^0-9.]+", ""); // Remove everything but digits and dot
+                    // Otherwise treat as numeric measurement (e.g. "95.0%", "120.0", etc.)
+                    String cleaned = rawValue.replaceAll("[^0-9.]+", "");
                     if (cleaned.isEmpty()) {
                         System.err.println("Invalid measurement value in message: " + message);
                         return;
                     }
-
                     double measurement = Double.parseDouble(cleaned);
+                    storage.addPatientData(patientId, measurement, recordType, timestamp);
 
-                    // Store data
-                    dataStorage.addPatientData(patientId, measurement, recordType, timestamp);
-                } catch (NumberFormatException e) {
-                    System.err.println("Failed to parse numeric fields in message: " + message);
-                    e.printStackTrace();
                 } catch (Exception e) {
-                    System.err.println("Unexpected error while parsing/storing message: " + message);
+                    System.err.println("Failed to parse/store message: " + message);
                     e.printStackTrace();
                 }
             }
@@ -83,7 +98,13 @@ public class WebSocketDataReader implements DataReader {
             @Override
             public void onClose(int code, String reason, boolean remote) {
                 System.err.println("WebSocket closed (" + code + "): " + reason);
-                // Maybe still implement reconnect func @Milena?
+                long delay = baseDelayMs * (1L << attempt);
+                try {
+                    TimeUnit.MILLISECONDS.sleep(delay);
+                    connectWithRetry(uri, storage, attempt + 1);
+                } catch (Exception e) {
+                    System.err.println("Reconnect attempt failed: " + e.getMessage());
+                }
             }
 
             @Override
@@ -97,7 +118,7 @@ public class WebSocketDataReader implements DataReader {
             client.connectBlocking();
         } catch (InterruptedException ie) {
             Thread.currentThread().interrupt();
-            throw new IOException("Interrupted while connecting to WebSocket", ie);
+            throw new IOException("Interrupted while connecting", ie);
         }
     }
 
