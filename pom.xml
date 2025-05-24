@@ -27,6 +27,11 @@
             <version>1.5.2</version>
         </dependency>
         <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>      <!-- backend -->
+            <version>1.7.25</version>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.8.2</version>
@@ -94,7 +99,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
-                    <mainClass>com.Main</mainClass>
+                    <mainClass>com.control.Main</mainClass>
                     <classpathScope>runtime</classpathScope>
                 </configuration>
             </plugin>

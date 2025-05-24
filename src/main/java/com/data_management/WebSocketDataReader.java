@@ -9,6 +9,8 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Implementation of DataReader for real-time WebSocket data streams.
@@ -41,7 +43,7 @@ public class WebSocketDataReader implements DataReader {
 
             @Override
             public void onMessage(String message) {
-                // Quick sanity check
+
                 if (message == null || !message.startsWith("{") || !message.endsWith("}")) {
                     System.err.println("Corrupted message (skipped): " + message);
                     return;
@@ -64,10 +66,9 @@ public class WebSocketDataReader implements DataReader {
 
                     // Handle Alert messages separately
                     if ("Alert".equalsIgnoreCase(recordType)) {
-                        // Build and fire an Alert
                         com.alerts.Alert alert = new com.alerts.Alert(
                                 String.valueOf(patientId),
-                                rawValue,    // "triggered" or "resolved"
+                                rawValue,
                                 timestamp
                         );
                         com.alerts.AlertUtils.fireWithPriority(
@@ -80,7 +81,7 @@ public class WebSocketDataReader implements DataReader {
                         return;
                     }
 
-                    // Otherwise treat as numeric measurement (e.g. "95.0%", "120.0", etc.)
+
                     String cleaned = rawValue.replaceAll("[^0-9.]+", "");
                     if (cleaned.isEmpty()) {
                         System.err.println("Invalid measurement value in message: " + message);
@@ -93,6 +94,7 @@ public class WebSocketDataReader implements DataReader {
                     System.err.println("Failed to parse/store message: " + message);
                     e.printStackTrace();
                 }
+
             }
 
             @Override
