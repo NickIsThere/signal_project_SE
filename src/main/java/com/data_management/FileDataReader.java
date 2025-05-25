@@ -28,7 +28,6 @@ public class FileDataReader implements DataReader{
 
         File file = new File(outputFilePath);
 
-        // Reading the file line by line
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 
             String line;
@@ -48,12 +47,10 @@ public class FileDataReader implements DataReader{
                         dataStorage.addPatientData(patientId, measurementValue, recordType, timestamp);
 
                     } catch (NumberFormatException e) {
-                        // Error for issues with parsing numbers
                         System.err.println("Error parsing line: " + line);
                         e.printStackTrace();
                     }
                 } else {
-                    //Error when the line doesn't have exactly 4 parts
                     System.err.println("Malformed line (skipping): " + line);
                 }
             }
@@ -97,7 +94,6 @@ public class FileDataReader implements DataReader{
         DataStorage dataStorage =  DataStorage.getInstance();
 
         FileDataReader fileDataReader = new FileDataReader(args);
-
         try {
             fileDataReader.readData(dataStorage);
             System.out.println("Data has been successfully read and stored");

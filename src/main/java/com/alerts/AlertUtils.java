@@ -18,10 +18,10 @@ public class AlertUtils {
      * Puts together a base alert with a PriorityAlertDecorator and a RepeatedAlertDecorator,
      * then triggers it using the specified DataStorage.
      *
-     * @param base     the base AlertComponent to decorate
-     * @param ds       the DataStorage instance used for logging or processing the alert
-     * @param prio     the PriorityAlertDecorator.Priority level to apply
-     * @param repeats  the number of times the alert should be repeated
+     * @param base the base AlertComponent to decorate
+     * @param ds the DataStorage instance used for logging or processing the alert
+     * @param prio the PriorityAlertDecorator.  Priority level to apply
+     * @param repeats the number of times the alert should be repeated
      * @param interval the interval in milliseconds between each repeat
      */
     public static void fireWithPriority(

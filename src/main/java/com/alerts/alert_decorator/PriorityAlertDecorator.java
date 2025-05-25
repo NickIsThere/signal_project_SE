@@ -10,7 +10,7 @@ import com.data_management.DataStorage;
  * when the alert is triggered.
  */
 public class PriorityAlertDecorator extends AlertDecorator {
-    public enum Priority { LOW, MEDIUM, HIGH, CRITICAL }
+    public enum Priority {LOW, MEDIUM, HIGH, CRITICAL}
 
     private final Priority priority;
 

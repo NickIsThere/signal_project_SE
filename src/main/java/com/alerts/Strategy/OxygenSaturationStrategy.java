@@ -32,7 +32,6 @@ public class OxygenSaturationStrategy implements AlertStrategy {
                 spo2.add(r);
             }
         }
-
         Comparator<PatientRecord> byTime = Comparator.comparingLong(PatientRecord::getTimestamp);
         spo2.sort(byTime);
 
@@ -55,8 +54,6 @@ public class OxygenSaturationStrategy implements AlertStrategy {
             }
         }
     }
-
-
 
     private void checkRapidSpO2Drop(List<PatientRecord> spo2, String patientId, DataStorage dataStorage) {
         for (int i = 0; i < spo2.size(); i++) {

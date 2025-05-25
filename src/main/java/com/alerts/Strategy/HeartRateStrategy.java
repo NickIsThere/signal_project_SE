@@ -12,6 +12,7 @@ import com.data_management.PatientRecord;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class HeartRateStrategy implements AlertStrategy {
 
@@ -29,7 +30,7 @@ public class HeartRateStrategy implements AlertStrategy {
     public void checkAlert(Patient patient, DataStorage dataStorage) {
         List<PatientRecord> records = patient.getRecords(0, System.currentTimeMillis());
         for (PatientRecord r : records) {
-            if (r.getRecordType() == "ECG"){
+            if (Objects.equals(r.getRecordType(), "ECG")){
                 this.ecg.add(r);
             }
         }
@@ -53,7 +54,6 @@ public class HeartRateStrategy implements AlertStrategy {
                 dataStorage.saveAlertInLog(alert);
                 AlertUtils.fireWithPriority(alert, dataStorage, PriorityAlertDecorator.Priority.MEDIUM, 3, 15_000L
                 );
-
             }
         }
     }

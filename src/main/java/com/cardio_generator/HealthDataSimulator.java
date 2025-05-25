@@ -4,7 +4,6 @@ import java.net.URISyntaxException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.net.URISyntaxException;
 
 import com.cardio_generator.generators.AlertGenerator;
 
@@ -39,7 +38,6 @@ public class HealthDataSimulator {
     private static int patientCount = 50; // Default number of patients
     private static ScheduledExecutorService scheduler;
     private static OutputStrategy outputStrategy;
-    private static WebSocketClient webSocketClient;
     private static final Random random = new Random();
 
 
@@ -64,15 +62,14 @@ public class HealthDataSimulator {
 
     public static void main(String[] args) throws URISyntaxException, InterruptedException
     {
-        HealthDataSimulator simulator = HealthDataSimulator.getInstance();
         outputStrategy = new WebSocketOutputStrategy(WS_PORT);
-        webSocketClient = new WebSocketClient(WS_URI);
+        WebSocketClient webSocketClient = new WebSocketClient(WS_URI);
 
         webSocketClient.start();
         scheduler = Executors.newScheduledThreadPool(patientCount * 4);
 
         List<Integer> patientIds = initializePatientIds(patientCount);
-        Collections.shuffle(patientIds); // Randomize the order of patient IDs
+        Collections.shuffle(patientIds);
 
         scheduleTasksForPatients(patientIds);
     }
@@ -95,8 +92,7 @@ public class HealthDataSimulator {
                         try {
                             patientCount = Integer.parseInt(args[++i]);
                         } catch (NumberFormatException e) {
-                            System.err
-                                    .println("Error: Invalid number of patients. Using default value: " + patientCount);
+                            System.err.println("Error: Invalid number of patients. Using default value: " + patientCount);
                         }
                     }
                     break;
@@ -118,8 +114,7 @@ public class HealthDataSimulator {
                                 outputStrategy = new WebSocketOutputStrategy(port);
                                 System.out.println("WebSocket output will be on port: " + port);
                             } catch (NumberFormatException e) {
-                                System.err.println(
-                                        "Invalid port for WebSocket output. Please specify a valid port number.");
+                                System.err.println("Invalid port for WebSocket output. Please specify a valid port number.");
                             }
                         } else if (outputArg.startsWith("tcp:")) {
                             try {

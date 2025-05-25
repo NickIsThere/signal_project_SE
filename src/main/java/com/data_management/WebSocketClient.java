@@ -15,7 +15,7 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
     /**
      * Constructs the WebSocket client with the given server URI.
      *
-     * @param serverUri the ws:// or wss:// endpoint
+     * @param serverUri the endpoint
      * @throws URISyntaxException if the URI string is invalid
      */
     public WebSocketClient(String serverUri) throws URISyntaxException {

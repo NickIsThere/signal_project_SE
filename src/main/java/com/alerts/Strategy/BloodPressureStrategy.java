@@ -60,8 +60,7 @@ public class BloodPressureStrategy implements AlertStrategy {
         checkHypotensiveHypoxemia(systolic, spo2, patientId, dataStorage);
     }
 
-    private void checkCriticalThresholds(List<PatientRecord> systolic,
-                                         List<PatientRecord> diastolic,
+    private void checkCriticalThresholds(List<PatientRecord> systolic, List<PatientRecord> diastolic,
                                          String patientId,
                                          DataStorage dataStorage) {
         for (PatientRecord s : systolic) {

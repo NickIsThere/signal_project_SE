@@ -9,19 +9,16 @@ import java.net.URI;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Implementation of DataReader for real-time WebSocket data streams.
  */
 public class WebSocketDataReader implements DataReader {
     private WebSocketClient client;
-    private final int maxRetries = 5;
     private final long baseDelayMs = 1000;
 
     @Override
-    public void readData(DataStorage dataStorage) throws IOException {
+    public void readData(DataStorage dataStorage) throws UnsupportedOperationException {
         throw new UnsupportedOperationException("Batch read not supported by WebSocketDataReader");
     }
 
@@ -30,7 +27,16 @@ public class WebSocketDataReader implements DataReader {
         connectWithRetry(uri, storage, 0);
     }
 
+    /**
+     * Opens (or re-opens) a WebSocket to uri as logn as the maxRetries are not reached
+     *
+     * @param uri endpoint to connect to
+     * @param storage target DataStorage
+     * @param attempt current attempt counter
+     * @throws IOException when attempt > maxRetries
+     */
     private void connectWithRetry(URI uri, DataStorage storage, int attempt) throws IOException {
+        int maxRetries = 5;
         if (attempt > maxRetries) {
             throw new IOException("Max reconnect attempts reached for " + uri);
         }
@@ -48,7 +54,6 @@ public class WebSocketDataReader implements DataReader {
                     System.err.println("Corrupted message (skipped): " + message);
                     return;
                 }
-
                 try {
                     //parsing simple JSON object into a Map<String,String>
                     Map<String, String> map = Arrays.stream(
@@ -80,7 +85,6 @@ public class WebSocketDataReader implements DataReader {
                         );
                         return;
                     }
-
 
                     String cleaned = rawValue.replaceAll("[^0-9.]+", "");
                     if (cleaned.isEmpty()) {

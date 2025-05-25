@@ -5,8 +5,7 @@ import java.util.List;
 
 /**
  * Represents a patient and manages their medical records.
- * This class stores patient-specific data, allowing for the addition and
- * retrieval
+ * This class stores patient-specific data, allowing for the addition and retrieval
  * of medical records based on specified criteria.
  */
 public class Patient {
@@ -30,10 +29,8 @@ public class Patient {
      * timestamp.
      *
      * @param measurementValue the measurement value to store in the record
-     * @param recordType       the type of record, e.g., "HeartRate",
-     *                         "BloodPressure"
-     * @param timestamp        the time at which the measurement was taken, in
-     *                         milliseconds since UNIX epoch
+     * @param recordType the type of record, e.g, "HeartRate","BloodPressure"
+     * @param timestamp the time at which the measurement was taken, in milliseconds since UNIX epoch
      */
     public void addRecord(double measurementValue, String recordType, long timestamp) {
         PatientRecord record = new PatientRecord(this.patientId, measurementValue, recordType, timestamp);
@@ -55,7 +52,7 @@ public class Patient {
         for (PatientRecord record : patientRecords) {
             long recordTimestamp = record.getTimestamp();
             if (recordTimestamp >= startTime && recordTimestamp <= endTime) {
-                filteredRecords.add(record);  // Add to the list if within the time range
+                filteredRecords.add(record);
             }
         }
 
@@ -65,6 +62,9 @@ public class Patient {
     /**
      * If a record with the same type & timestamp exists, update its value;
      * otherwise append a new record.
+     * @param measurementValue the measurement value to store in the record
+     * @param recordType The type of the record, same as mentioned above
+     * @param timestamp time in milliseconds since the UNIX epoch
      */
     public void addOrUpdateRecord(double measurementValue, String recordType, long timestamp) {
         for (PatientRecord rec : patientRecords) {
