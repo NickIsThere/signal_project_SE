@@ -50,7 +50,7 @@ public class WebSocketDataReader implements DataReader {
                 }
 
                 try {
-                    // Parse simple JSON object into a Map<String,String>
+                    //parsing simple JSON object into a Map<String,String>
                     Map<String, String> map = Arrays.stream(
                                     message.substring(1, message.length() - 1).split(","))
                             .map(s -> s.split(":", 2))
@@ -64,7 +64,7 @@ public class WebSocketDataReader implements DataReader {
                     String recordType = map.get("recordType");
                     String rawValue   = map.get("measurementValue");
 
-                    // Handle Alert messages separately
+                    //handling Alert messages separately
                     if ("Alert".equalsIgnoreCase(recordType)) {
                         com.alerts.Alert alert = new com.alerts.Alert(
                                 String.valueOf(patientId),

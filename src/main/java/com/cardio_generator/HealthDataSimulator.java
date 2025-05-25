@@ -1,8 +1,10 @@
 package com.cardio_generator;
 
+import java.net.URISyntaxException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.net.URISyntaxException;
 
 import com.cardio_generator.generators.AlertGenerator;
 
@@ -15,6 +17,7 @@ import com.cardio_generator.outputs.FileOutputStrategy;
 import com.cardio_generator.outputs.OutputStrategy;
 import com.cardio_generator.outputs.TcpOutputStrategy;
 import com.cardio_generator.outputs.WebSocketOutputStrategy;
+import com.data_management.WebSocketClient;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,11 +34,17 @@ import java.util.ArrayList;
  */
 public class HealthDataSimulator {
 
+
     private static HealthDataSimulator instance;
     private static int patientCount = 50; // Default number of patients
     private static ScheduledExecutorService scheduler;
-    private static OutputStrategy outputStrategy = new ConsoleOutputStrategy(); // Default output strategy
+    private static OutputStrategy outputStrategy;
+    private static WebSocketClient webSocketClient;
     private static final Random random = new Random();
+
+
+    private static final String WS_URI = "ws://localhost:8080";
+    private static final int WS_PORT = 8080;
 
     /**
      * Private constructor for a singleton design pattern
@@ -53,17 +62,19 @@ public class HealthDataSimulator {
         return instance;
     }
 
-    public static void main(String[] args) throws IOException {
-
+    public static void main(String[] args) throws URISyntaxException, InterruptedException
+    {
         HealthDataSimulator simulator = HealthDataSimulator.getInstance();
-        simulator.parseArguments(args);
+        outputStrategy = new WebSocketOutputStrategy(WS_PORT);
+        webSocketClient = new WebSocketClient(WS_URI);
 
+        webSocketClient.start();
         scheduler = Executors.newScheduledThreadPool(patientCount * 4);
 
-        List<Integer> patientIds = simulator.initializePatientIds(patientCount);
+        List<Integer> patientIds = initializePatientIds(patientCount);
         Collections.shuffle(patientIds); // Randomize the order of patient IDs
 
-        simulator.scheduleTasksForPatients(patientIds);
+        scheduleTasksForPatients(patientIds);
     }
 
     /**
@@ -104,7 +115,6 @@ public class HealthDataSimulator {
                         } else if (outputArg.startsWith("websocket:")) {
                             try {
                                 int port = Integer.parseInt(outputArg.substring(10));
-                                // Initialize your WebSocket output strategy here
                                 outputStrategy = new WebSocketOutputStrategy(port);
                                 System.out.println("WebSocket output will be on port: " + port);
                             } catch (NumberFormatException e) {
@@ -114,7 +124,6 @@ public class HealthDataSimulator {
                         } else if (outputArg.startsWith("tcp:")) {
                             try {
                                 int port = Integer.parseInt(outputArg.substring(4));
-                                // Initialize your TCP socket output strategy here
                                 outputStrategy = new TcpOutputStrategy(port);
                                 System.out.println("TCP socket output will be on port: " + port);
                             } catch (NumberFormatException e) {

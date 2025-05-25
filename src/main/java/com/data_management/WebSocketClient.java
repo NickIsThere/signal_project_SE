@@ -38,23 +38,13 @@ public class WebSocketClient extends org.java_websocket.client.WebSocketClient {
 
     @Override
     public void onMessage(String message) {
-        // Expected CSV: patientId,measurementValue,recordType,timestamp
         String[] parts = message.split(",");
-        if (parts.length != 4) {
-            System.err.println("Malformed message: " + message);
-            return;
-        }
-        try {
-            int patientId= Integer.parseInt(parts[0].trim());
-            double measurementValue = Double.parseDouble(parts[1].trim());
-            String recordType = parts[2].trim();
-            long timestamp = Long.parseLong(parts[3].trim());
-
-            dataStorage.addPatientData(patientId, measurementValue, recordType, timestamp);
-        } catch (NumberFormatException e) {
-            System.err.println("Error parsing message: " + message);
-            e.printStackTrace();
-        }
+        int patientId = Integer.parseInt(parts[0]);
+        long timestamp = Long.parseLong(parts[1]);
+        String label = parts[2];
+        if (label.equalsIgnoreCase("Alert")) return;
+        double measurementValue = Double.parseDouble(parts[3]);
+        dataStorage.addPatientData(patientId, measurementValue, label, timestamp);
     }
 
     @Override

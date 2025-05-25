@@ -59,6 +59,7 @@ public class DataStorage {
             patient.addOrUpdateRecord(measurementValue, recordType, timestamp);
             return patient;
         });
+        System.out.println("[DataStorage] Added Patient. PatientId: " + patientId + " MeasurementValue: " + measurementValue + " RecordType: " + recordType + " Timestamp: " + timestamp);
     }
 
     /**

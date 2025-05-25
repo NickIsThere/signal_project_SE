@@ -19,13 +19,9 @@ public class WebSocketOutputStrategy implements OutputStrategy {
     public void output(int patientId, long timestamp, String label, String data) {
         String message;
         try {
-            // Re format as JSON
-            message = String.format(
-                    "{" + "\"patientId\":%d," + "\"timestamp\":%d," + "\"recordType\":\"%s\"," + "\"measurementValue\":\"%s\"" + "}",
-                    patientId, timestamp, label, data
-            );
+            message = patientId + "," + timestamp + "," + label + "," + data;
         } catch (Exception e) {
-            System.err.println("Error building JSON message for patient " + patientId);
+            System.err.println("Error building message for patient " + patientId);
             e.printStackTrace();
             return;
         }
